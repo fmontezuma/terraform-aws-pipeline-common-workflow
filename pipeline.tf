@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "${data.aws_caller_identity.current.account_id}-${var.project_name}-pipeline-bucket"
+  bucket = "${format("%.63s", "${data.aws_caller_identity.current.account_id}-${var.project_name}-pipeline-bucket")}"
   acl    = "private"
 }
 
