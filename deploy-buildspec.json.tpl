@@ -16,14 +16,14 @@ phases:
       - TAG="$${ENV}-$${TAG:-$CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - MANIFEST=$(aws ecr batch-get-image --repository-name ${project_name} --image-ids imageTag=$CODEBUILD_RESOLVED_SOURCE_VERSION --query 'images[].imageManifest' --output text)
       - aws ecr put-image --repository-name ${project_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
-      - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/k8s-deployment
+      - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/k8s-deploy
       - cd devops/helm
       - git clone https://github.com/fmontezuma/helm-microservice.git
   build:
     commands:
       - docker run --rm -v $(pwd):/apps -v ~/.kube/config:/root/.kube/config alpine/helm:2.9.0 template ./helm-microservice -f values/${project_name}/common.yml -f values/${project_name}/$ENV.yml --set image.tag=$TAG > ${project_name}.yml
-      - mv ${project_name}.yml ../../k8s-deployment/microservices/${project_name}.yml
-      - cd ../../k8s-deployment
+      - mv ${project_name}.yml ../../k8s-deploy/microservices/${project_name}.yml
+      - cd ../../k8s-deploy
       - git add --all
       - git commit -m "${project_name} - $${TAG}"
       - git push origin $ENV
