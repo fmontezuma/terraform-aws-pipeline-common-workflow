@@ -11,7 +11,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/${project_name}:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker build -t ${account_id}.dkr.ecr.${region}.amazonaws.com/${project_name}-${microservice_name}:$CODEBUILD_RESOLVED_SOURCE_VERSION .
   post_build:
     commands:
       - echo Build completed on `date`

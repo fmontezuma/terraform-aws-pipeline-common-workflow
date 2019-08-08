@@ -1,14 +1,9 @@
-resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "${format("%.63s", "${data.aws_caller_identity.current.account_id}-${var.project_name}-pipeline")}"
-  acl    = "private"
-}
-
 resource "aws_codepipeline" "codepipeline" {
-  name     = "${var.project_name}"
+  name     = "${var.project_name}-${var.microservice_name}"
   role_arn = "${var.codepipeline_role_arn}"
 
   artifact_store {
-    location = "${aws_s3_bucket.codepipeline_bucket.bucket}"
+    location = "${var.pipeline_s3_bucket}"
     type     = "S3"
   }
 
@@ -24,7 +19,7 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        RepositoryName = "${var.project_name}"
+        RepositoryName = "${var.project_name}-${var.microservice_name}"
         BranchName = "master"
       }
     }
@@ -74,7 +69,7 @@ resource "aws_codepipeline" "codepipeline" {
       provider = "Manual"
       version  = "1"
       configuration = {
-        ExternalEntityLink = "http://${var.project_name}-${var.environments[0]}.${var.dnsSuffixDev}"
+        ExternalEntityLink = "http://${var.project_name}-${var.microservice_name}-${var.environments[0]}.${var.dnsSuffixDev}"
       }
     }
   }
@@ -102,7 +97,7 @@ resource "aws_codepipeline" "codepipeline" {
       provider = "Manual"
       version  = "1"
       configuration = {
-        ExternalEntityLink = "http://${var.project_name}-${var.environments[1]}.${var.dnsSuffixHml}"
+        ExternalEntityLink = "http://${var.project_name}-${var.microservice_name}-${var.environments[1]}.${var.dnsSuffixHml}"
       }
     }
   }
