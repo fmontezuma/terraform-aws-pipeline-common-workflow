@@ -22,6 +22,6 @@ resource "aws_codebuild_project" "build" {
     type            = "CODECOMMIT"
     location        = "https://git-codecommit.${data.aws_region.current.name}.amazonaws.com/v1/repos/${var.project_name}-${var.microservice_name}"
     git_clone_depth = 1
-    buildspec = templatefile("${path.module}/build-buildspec.json.tpl", { project_name = "${var.microservice_name}", account_id = "${data.aws_caller_identity.current.account_id}", region = "${data.aws_region.current.name}" })
+    buildspec = templatefile("${path.module}/build-buildspec.json.tpl", { project_name = "${var.project_name}", microservice_name = "${var.microservice_name}", account_id = "${data.aws_caller_identity.current.account_id}", region = "${data.aws_region.current.name}" })
   }
 }
