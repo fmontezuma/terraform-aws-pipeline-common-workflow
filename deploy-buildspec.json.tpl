@@ -11,13 +11,13 @@ phases:
       - git config --global user.email ""
       - git config --global user.name "AWS Pipeline"
       #- curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install >> extras.sh && . ./extras.sh
-      - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/devops
+      - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-devops
       - ENV="${env_val}"
       - TAG="$${ENV}-$${TAG:-$CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - MANIFEST=$(aws ecr batch-get-image --repository-name ${project_name} --image-ids imageTag=$CODEBUILD_RESOLVED_SOURCE_VERSION --query 'images[].imageManifest' --output text)
       - aws ecr put-image --repository-name ${project_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
       - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
-      - cd devops/helm
+      - cd ${project_name}-devops/helm
       - git clone https://github.com/fmontezuma/helm-microservice.git
   build:
     commands:
