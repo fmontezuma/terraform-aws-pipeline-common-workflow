@@ -18,7 +18,7 @@ phases:
       - aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
       - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
       - cd ${project_name}-devops/helm
-      - helm repo add fmontezuma-$ENV https://fmontezuma.github.io/helm-chart/$ENV
+      - helm repo add fmontezuma https://fmontezuma.github.io/helm-chart/
       - helm fetch fmontezuma/microservice --untar
   build:
     commands:
