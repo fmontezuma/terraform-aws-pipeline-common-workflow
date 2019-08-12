@@ -15,7 +15,7 @@ phases:
       - ENV="${env_val}"
       - TAG="$${ENV}-$${TAG:-$CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - MANIFEST=$(aws ecr batch-get-image --repository-name ${project_name} --image-ids imageTag=$CODEBUILD_RESOLVED_SOURCE_VERSION --query 'images[].imageManifest' --output text)
-      - aws ecr put-image --repository-name ${project_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
+      - aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
       - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
       - cd ${project_name}-devops/helm
       - git clone https://github.com/fmontezuma/helm-microservice.git
