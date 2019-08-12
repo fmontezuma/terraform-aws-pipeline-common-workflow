@@ -25,6 +25,7 @@ phases:
   build:
     commands:
       - docker run --rm --entrypoint "/bin/sh" -v $(pwd):/apps -v ~/.kube/config:/root/.kube/config alpine/helm:2.9.0 -c "$HELM_CMD"
+      - mkdir -p ${project_name}-k8s-deploy/microservices
       - mv ${project_name}-${microservice_name}.yml ${project_name}-k8s-deploy/microservices/${project_name}-${microservice_name}.yml
       - cd ${project_name}-k8s-deploy
       - git add --all
