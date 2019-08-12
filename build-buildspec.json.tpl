@@ -16,4 +16,4 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/${project_name}:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker push ${account_id}.dkr.ecr.${region}.amazonaws.com/${project_name}-${microservice_name}:$CODEBUILD_RESOLVED_SOURCE_VERSION
