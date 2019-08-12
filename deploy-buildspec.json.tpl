@@ -18,11 +18,13 @@ phases:
       - aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
       - git clone --branch $ENV https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
       - cd ${project_name}-devops/helm
-      - helm repo add fmontezuma-$ENV https://fmontezuma.github.io/helm-chart/$ENV
-      - helm fetch fmontezuma-$ENV/microservice --untar
+      - CMD1="helm repo add fmontezuma-$${ENV} https://fmontezuma.github.io/helm-chart/$${ENV}"
+      - CMD2="helm fetch fmontezuma-$${ENV}/microservice --untar"
+      - CMD3="helm template ./microservice -f values/${project_name}-${microservice_name}/common.yml -f values/${project_name}-${microservice_name}/$${ENV}.yml --set image.tag=$${TAG} > ${project_name}-${microservice_name}.yml"
+      - HELM_CMD="$CMD1 && $CMD2 && $CMD3"
   build:
     commands:
-      - docker run --rm -v $(pwd):/apps -v ~/.kube/config:/root/.kube/config alpine/helm:2.9.0 template ./microservice -f values/${project_name}-${microservice_name}/common.yml -f values/${project_name}-${microservice_name}/$ENV.yml --set image.tag=$TAG > ${project_name}-${microservice_name}.yml
+      - docker run --rm --entrypoint "/bin/sh" -v $(pwd):/apps -v ~/.kube/config:/root/.kube/config alpine/helm:2.9.0 $HELM_CMD
       - mv ${project_name}-${microservice_name}.yml ../../k8s-deploy/microservices/${project_name}-${microservice_name}.yml
       - cd ../../${project_name}-k8s-deploy
       - git add --all
