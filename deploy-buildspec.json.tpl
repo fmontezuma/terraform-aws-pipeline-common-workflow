@@ -19,11 +19,10 @@ phases:
       - cd ${project_name}-k8s-deploy
       - git checkout ${env_val} 2>/dev/null || git checkout -b ${env_val}
       - cd ..
-      - cd ${project_name}-devops/helm
       - CMD0="helm init --client-only"
       - CMD1="helm repo add fmontezuma-${env_val} https://fmontezuma.github.io/helm-chart/${env_val}"
       - CMD2="helm fetch fmontezuma-${env_val}/microservice --untar"
-      - CMD3="helm template ./microservice -f values/${project_name}-${microservice_name}/common.yml -f values/${project_name}-${microservice_name}/${env_val}.yml --set image.tag=$${TAG} > ${project_name}-${microservice_name}.yml"
+      - CMD3="helm template ./microservice -f ${project_name}-devops/helm/values/${project_name}-${microservice_name}/common.yml -f ${project_name}-devops/helm/values/${project_name}-${microservice_name}/${env_val}.yml --set image.tag=$${TAG} > ${project_name}-${microservice_name}.yml"
       - HELM_CMD="$CMD0;$CMD1;$CMD2;$CMD3"
   build:
     commands:
