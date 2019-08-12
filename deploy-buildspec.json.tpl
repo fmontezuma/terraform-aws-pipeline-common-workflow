@@ -15,7 +15,10 @@ phases:
       - TAG="${env_val}-$${TAG:-$CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - MANIFEST=$(aws ecr batch-get-image --repository-name ${project_name}-${microservice_name} --image-ids imageTag=$CODEBUILD_RESOLVED_SOURCE_VERSION --query 'images[].imageManifest' --output text)
       - aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true
-      - git clone --branch ${env_val} https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
+      - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
+      - cd ${project_name}-k8s-deploy
+      - git checkout ${env_val} 2>/dev/null || git checkout -b ${env_val}
+      - cd ..
       - cd ${project_name}-devops/helm
       - CMD0="helm init --client-only"
       - CMD1="helm repo add fmontezuma-${env_val} https://fmontezuma.github.io/helm-chart/${env_val}"
@@ -29,5 +32,5 @@ phases:
       - mv ${project_name}-${microservice_name}.yml ${project_name}-k8s-deploy/microservices/${project_name}-${microservice_name}.yml
       - cd ${project_name}-k8s-deploy
       - git add --all
-      - git commit -m "${project_name}-${microservice_name} - $${TAG}"
+      - git commit --allow-empty -m "${project_name}-${microservice_name} - $${TAG}"
       - git push origin ${env_val}
