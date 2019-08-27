@@ -1,6 +1,6 @@
 variable "environments" {
     type    = "list"
-    default = ["dev", "hml", "prod"]
+    default = ["dev", "hml", "prd"]
 }
 
 resource "aws_codebuild_project" "deploy" {
