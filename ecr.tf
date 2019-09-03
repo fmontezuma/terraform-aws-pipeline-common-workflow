@@ -5,7 +5,7 @@ resource "aws_ecr_repository" "ecr" {
 
 resource "aws_ecr_repository_policy" "cross_account" {
   count = var.only_deploy ? 0 : 1
-  repository = "${aws_ecr_repository.ecr.name}"
+  repository = "${aws_ecr_repository.ecr[0].name}"
 
   policy = <<EOF
 {

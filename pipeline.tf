@@ -25,23 +25,21 @@ resource "aws_codepipeline" "codepipeline" {
     }
   }
 
-  dynamic "build" {
+  dynamic "stage" {
     for_each = var.only_deploy ? [] : [1]
     content {
-      stage {
-        name = "Build"
+      name = "Build"
 
-        action {
-          name             = "Build"
-          category         = "Build"
-          owner            = "AWS"
-          provider         = "CodeBuild"
-          input_artifacts  = ["source_output"]
-          version          = "1"
+      action {
+        name             = "Build"
+        category         = "Build"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        input_artifacts  = ["source_output"]
+        version          = "1"
 
-          configuration = {
-            ProjectName = "${aws_codebuild_project.build.name}"
-          }
+        configuration = {
+          ProjectName = "${aws_codebuild_project.build.name}"
         }
       }
     }
