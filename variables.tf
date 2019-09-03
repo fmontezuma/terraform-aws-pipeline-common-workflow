@@ -9,6 +9,6 @@ variable pipeline_s3_bucket {}
 
 variable "only_deploy" {
   description = "If true, this pipeline will only deploy, not build"
-  type        = bool,
+  type        = bool
   default     = false
 }
