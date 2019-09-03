@@ -1,8 +1,10 @@
 resource "aws_ecr_repository" "ecr" {
+  count = var.only_deploy ? 0 : 1
   name = "${var.project_name}-${var.microservice_name}"
 }
 
 resource "aws_ecr_repository_policy" "cross_account" {
+  count = var.only_deploy ? 0 : 1
   repository = "${aws_ecr_repository.ecr.name}"
 
   policy = <<EOF

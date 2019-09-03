@@ -6,3 +6,9 @@ variable microservice_name {}
 variable dnsSuffixDev {}
 variable dnsSuffixHml {}
 variable pipeline_s3_bucket {}
+
+variable "only_deploy" {
+  description = "If true, this pipeline will only deploy, not build"
+  type        = bool,
+  default     = false
+}

@@ -2,6 +2,8 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_codebuild_project" "build" {
+  count = var.only_deploy ? 0 : 1
+
   name          = "${var.project_name}-${var.microservice_name}-build"
   description   = "Build process for ${var.project_name}-${var.microservice_name}"
   service_role  = "${var.codebuild_role_arn}"
