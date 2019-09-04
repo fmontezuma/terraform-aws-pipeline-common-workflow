@@ -26,6 +26,6 @@ resource "aws_codebuild_project" "deploy" {
     type            = "CODECOMMIT"
     location        = "https://git-codecommit.${data.aws_region.current.name}.amazonaws.com/v1/repos/${var.project_name}-${var.microservice_name}"
     git_clone_depth = 1
-    buildspec = templatefile("${path.module}/deploy-buildspec.json.tpl", { project_name = "${var.project_name}", microservice_name = "${var.microservice_name}", env_val = "${var.environments[count.index]}", region = "${data.aws_region.current.name}", only_deploy = var.only_deploy" })
+    buildspec = templatefile("${path.module}/deploy-buildspec.json.tpl", { project_name = "${var.project_name}", microservice_name = "${var.microservice_name}", env_val = "${var.environments[count.index]}", region = "${data.aws_region.current.name}", only_deploy = var.only_deploy })
   }
 }
