@@ -21,7 +21,7 @@ resource "aws_codebuild_project" "build" {
   }
 
   dynamic "vpc_config" {
-    for_each = var.build_vpc_id ? [1] : [0]
+    for_each = var.build_vpc_id == "" ? [0] : [1]
     content {
       vpc_id = var.build_vpc_id
       subnets = var.build_subnet_ids 
