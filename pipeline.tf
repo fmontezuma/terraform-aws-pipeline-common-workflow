@@ -39,7 +39,7 @@ resource "aws_codepipeline" "codepipeline" {
         version          = "1"
 
         configuration = {
-          ProjectName = "${aws_codebuild_project.build.name}"
+          ProjectName = "${aws_codebuild_project.build[0].name}"
         }
       }
     }
