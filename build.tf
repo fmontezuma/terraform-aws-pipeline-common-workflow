@@ -20,6 +20,15 @@ resource "aws_codebuild_project" "build" {
     privileged_mode = "true"
   }
 
+  dynamic "vpc_config" {
+    for_each = var.build_vpc_id ? [1] : [0]
+    content {
+      vpc_id = var.build_vpc_id
+      subnets = var.build_subnet_ids 
+      security_group_ids = var.build_security_group_ids
+    }
+  }
+
   source {
     type            = "CODECOMMIT"
     location        = "https://git-codecommit.${data.aws_region.current.name}.amazonaws.com/v1/repos/${var.project_name}-${var.microservice_name}"
