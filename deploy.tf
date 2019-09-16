@@ -1,8 +1,3 @@
-variable "environments" {
-    type    = "list"
-    default = ["dev", "hml", "prd"]
-}
-
 resource "aws_codebuild_project" "deploy" {
   count = length(var.environments)
 
