@@ -21,6 +21,7 @@ resource "aws_codepipeline" "codepipeline" {
       configuration = {
         RepositoryName = "${var.project_name}-${var.microservice_name}"
         BranchName = "master"
+        PollForSourceChanges = false
       }
     }
   }
