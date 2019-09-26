@@ -21,11 +21,11 @@ resource "aws_codebuild_project" "build" {
   }
 
   dynamic "vpc_config" {
-    for_each = var.build_vpc_id == "" ? [0] : [1]
+    for_each = var.build_vpc_config
     content {
-      vpc_id = var.build_vpc_id
-      subnets = var.build_subnet_ids 
-      security_group_ids = var.build_security_group_ids
+      security_group_ids = vpc_config.value.security_group_ids
+      subnets            = vpc_config.value.subnets
+      vpc_id             = vpc_config.value.vpc_id
     }
   }
 

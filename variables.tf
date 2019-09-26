@@ -7,19 +7,9 @@ variable dnsSuffixDev {}
 variable dnsSuffixHml {}
 variable pipeline_s3_bucket {}
 
-variable build_vpc_id { 
-  type = string
-  default = "" 
-}
-
-variable build_subnet_ids { 
+variable build_vpc_config { 
   type    = "list"
-  default = [] 
-}
-
-variable build_security_group_ids { 
-  type    = "list"
-  default = [] 
+  default = []
 }
 
 variable "only_deploy" {
