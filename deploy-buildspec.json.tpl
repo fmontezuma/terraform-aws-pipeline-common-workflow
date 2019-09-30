@@ -17,10 +17,6 @@ phases:
       - ${only_deploy} || (aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true)
       - TAG2="${env_val}"
       - ${only_deploy} || (aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG2 --image-manifest "$MANIFEST" || true)
-      - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
-      - cd ${project_name}-k8s-deploy
-      - git checkout ${env_val} 2>/dev/null || git checkout -b ${env_val}
-      - cd ..
       - CMD0="helm init --client-only"
       - CMD1="helm repo add fmontezuma-${env_val} https://fmontezuma.github.io/helm-chart/${env_val}"
       - CMD2="helm fetch fmontezuma-${env_val}/microservice --untar"
@@ -29,6 +25,10 @@ phases:
   build:
     commands:
       - docker run --rm --entrypoint "/bin/sh" -v $(pwd):/apps -v ~/.kube/config:/root/.kube/config alpine/helm:2.9.0 -c "$HELM_CMD"
+      - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
+      - cd ${project_name}-k8s-deploy
+      - git checkout ${env_val} 2>/dev/null || git checkout -b ${env_val}
+      - cd ..
       - mkdir -p ${project_name}-k8s-deploy/microservices
       - mv ${project_name}-${microservice_name}.yml ${project_name}-k8s-deploy/microservices/${project_name}-${microservice_name}.yml
       - cd ${project_name}-k8s-deploy
