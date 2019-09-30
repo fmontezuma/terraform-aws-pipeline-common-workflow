@@ -14,8 +14,9 @@ phases:
       - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-devops
       - ${only_deploy} || MANIFEST=$(aws ecr batch-get-image --repository-name ${project_name}-${microservice_name} --image-ids imageTag=$CODEBUILD_RESOLVED_SOURCE_VERSION --query 'images[].imageManifest' --output text)
       - TAG="${env_val}-$${TAG:-$CODEBUILD_RESOLVED_SOURCE_VERSION}"
+      - ${only_deploy} || (aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-manifest "$MANIFEST" || true)
       - TAG2="${env_val}"
-      - ${only_deploy} || (aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG --image-tag $TAG2 --image-manifest "$MANIFEST" || true)
+      - ${only_deploy} || (aws ecr put-image --repository-name ${project_name}-${microservice_name} --image-tag $TAG2 --image-manifest "$MANIFEST" || true)
       - git clone https://git-codecommit.${region}.amazonaws.com/v1/repos/${project_name}-k8s-deploy
       - cd ${project_name}-k8s-deploy
       - git checkout ${env_val} 2>/dev/null || git checkout -b ${env_val}
