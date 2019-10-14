@@ -6,7 +6,6 @@ variable microservice_name {}
 variable dnsSuffixDev {}
 variable dnsSuffixHml {}
 variable pipeline_s3_bucket {}
-variable account_id {}
 
 variable build_vpc_config { 
   type    = "list"
@@ -22,4 +21,8 @@ variable "only_deploy" {
 variable "environments" {
   type    = "list"
   default = ["dev", "hml", "prd"]
+}
+
+variable account_ids { 
+  type    = "list"
 }
