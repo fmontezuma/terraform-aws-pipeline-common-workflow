@@ -6,6 +6,7 @@ variable microservice_name {}
 variable dnsSuffixDev {}
 variable dnsSuffixHml {}
 variable pipeline_s3_bucket {}
+variable account_id {}
 
 variable build_vpc_config { 
   type    = "list"

@@ -35,3 +35,26 @@ phases:
       - git add --all
       - git commit --allow-empty -m "${project_name}-${microservice_name} - $${TAG}"
       - git push origin ${env_val}
+      - CREDENTIALS=$(aws sts assume-role --role-arn arn:aws:iam::${account_id}:role/kubectl --role-session-name codebuild-kubectl --duration-seconds 900)
+      - export AWS_ACCESS_KEY_ID="$(echo $${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
+      - export AWS_SECRET_ACCESS_KEY="$(echo $${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
+      - export AWS_SESSION_TOKEN="$(echo $${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
+      - export AWS_EXPIRATION=$(echo $${CREDENTIALS} | jq -r '.Credentials.Expiration')
+      - cd ../${project_name}-devops/helm/values/${project_name}-${microservice_name}
+      - aws eks update-kubeconfig --name ${project_name}-${env_val} --kubeconfig kubeconfig.yml
+      - APP_NAME=$(grep -Po 'appName:[ ]\K.*' common.yml)
+      - echo $APP_NAME
+      - NAMESPACE=$(grep -Po 'namespace:[ ]\K.*' common.yml)
+      - echo $NAMESPACE
+      - LAST_VERSION=$(kubectl -n=$NAMESPACE get deployment $APP_NAME -o jsonpath={.status.observedGeneration} --kubeconfig kubeconfig.yml)
+      - echo $LAST_VERSION
+      - LAST_VERSION=$${LAST_VERSION:-""}
+      - |
+        currentVersion=$(kubectl -n=$NAMESPACE get deployment/$APP_NAME -o jsonpath={.status.observedGeneration} --kubeconfig kubeconfig.yml)
+        while [ $LAST_VERSION -eq $currentVersion ]
+        do 
+          echo "Waiting deploy start.."
+          sleep 10
+          currentVersion=$(kubectl -n=$NAMESPACE get deployment/$APP_NAME -o jsonpath={.status.observedGeneration} --kubeconfig kubeconfig.yml)
+        done
+      - kubectl -n=$NAMESPACE rollout status deployment/$APP_NAME --kubeconfig kubeconfig.yml
